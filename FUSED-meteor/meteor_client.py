@@ -3,16 +3,29 @@ from MeteorClient import MeteorClient
 import numpy as np
 import scipy as sp
 import os
+import json
 
 client = MeteorClient('ws://127.0.0.1:3000/websocket')
-
 
 def callback_function(error, result):
     if error:
         print(error)
         return
-
     print(result)
+
+def callback_register(error, result):
+    if error:
+        print(error)
+        return
+
+    print('here is the result', result, result.__class__.__name__)
+    item = result
+    if item['pid'] == os.getpid():
+        try:
+            client.call('addResult', [item['_id'], str(eval(item['text']))+' (%d)'%(os.getpid())], callback_function)
+        except Exception as e:
+            client.call('addResult', [item['_id'], '??? (%d)'%(os.getpid())], callback_function)
+            print(str(e))
 
 
 def subscribed(subscription):
@@ -35,18 +48,19 @@ def added(collection, id, fields):
     print('Num lists: {}'.format(len(all_lists)))
 
     if not 'result' in fields:
-        item = {}
-        # while 'pid' not in item.keys():
-        #     client.call('reserve', [id, os.getpid()], callback_function)
-        #     time.sleep(0.1)
-        #     item = client.find_one('items', selector={'_id':id})
-        #     print(item)
-        #if item['pid'] == os.getpid():
-        try:
-            client.call('addResult', [id, str(eval(fields['text']))], callback_function)
-        except Exception as e:
-            client.call('addResult', [id, '???'], callback_function)
-            print(str(e))
+        pid = os.getpid()
+        client.call('reserve', [id, pid], callback_register)
+        # print(pid, pid2)
+        # if pid2 == pid:
+        #     print('%d: this one is for me: %d'%(pid, pid2))
+        #     try:
+        #         client.call('addResult', [id, str(eval(fields['text']))], callback_function)
+        #     except Exception as e:
+        #         client.call('addResult', [id, '???'], callback_function)
+        #         print(str(e))
+        # else:
+        #     print('%d: this one is for me: %d'%(pid, pid2))
+
 
         # if collection == 'list' you could subscribe to the list here
         # with something like

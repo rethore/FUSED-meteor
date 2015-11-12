@@ -23,10 +23,13 @@ Meteor.methods({
   },
   reserve: function(id, pid){
     var item = Items.findOne({_id:id});
-    console.log(id, pid, item)
     if (! item.hasOwnProperty('pid')) {
-      Items.update(id, {$set: {pid: pid}})
+      Items.update(id, {$set: {pid: pid}});
+      console.log(id, pid, item)
+      return Items.findOne({_id:id})
+    } else {
+      console.log(id, pid, item, item.pid);
+      return item
     }
-
   }
 });
