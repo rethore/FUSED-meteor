@@ -1,0 +1,42 @@
+<head>
+  <title>FUSED-meteor</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  <div>
+    {{> hello}}
+  </div>
+
+  <div>
+    {{> add_items}}
+  </div>
+
+  <div>
+    {{> item_list}}
+  </div>
+</body>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
+</template>
+
+<template name="add_items">
+  <form class="new_item">
+    <input name="item" placeholder="New Item">
+  </form>
+</template>
+
+<template name="item_list">
+  <ul>
+  {{#each items}}
+    <li>{{> item_element}}</li>
+  {{/each}}
+  </ul>
+</template>
+
+<template name="item_element">
+  {{text}}
+</template>
