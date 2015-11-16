@@ -1,0 +1,49 @@
+# global variables
+tsr: 8.0
+rated_power: 3.
+max_tipspeed: 62.
+min_wsp: 0.
+max_wsp: 25.
+project_lifetime: 20.
+
+rotor_diameter: 101.0
+hub_height: 100.0
+tower_bottom_diameter: 4.
+tower_top_diameter: 2.
+
+# loads inputs
+Iref: 0.16
+F: 0.777
+wohler_exponent_blade_flap: 10.0
+wohler_exponent_tower: 4.
+nSigma4fatFlap: 1.2
+nSigma4fatTower: 0.8
+dLoad_dU_factor_flap: 0.9
+dLoad_dU_factor_tower: 0.8
+lifetime_cycles: 1.0e07
+EdgeExtDynFact: 2.5
+EdgeFatDynFact: 0.75
+WeibullInput: True
+WeiA_input: 11.
+WeiC_input: 2.00
+Nsections: 21
+lifetime_cycles: 1.0E+7
+wohler_exponent_blade_flap: 10.0
+PMtarget: 1.0
+
+MaxChordrR: 0.2
+TIF_FLext: 1.
+TIF_EDext: 1.
+TIF_FLfat: 1.
+sc_frac_flap: 0.3
+sc_frac_edge: 0.8
+SF_blade: 1.1
+Slim_ext_blade: 200.0
+Slim_fat_blade: 27
+AddWeightFactorBlade: 1.2
+blade_density: 2100.
+
+wohler_exponent_tower: 4.
+stress_limit_extreme_tower: 235.0
+stress_limit_fatigue_tower: 14.885
+safety_factor_tower: 1.5
