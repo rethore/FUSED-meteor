@@ -57,13 +57,14 @@ $ pip install jupyter
 
 # Make a simple meteor web-app
 
+## Reorganizing the file structure
 Starting from the base example, we are going to move the code around a bit.
 First create 3 directories:
 
 ```bash
 - client #where the client javascript code will be located
 - server #where the server javascript code will be located
-- model #Where the data model will be defined and shared between client and server code
+- models #Where the data model will be defined and shared between client and server code
 ```
 
 In client, let's move the `.html`, `.css` and `.js` files. You can rename them as you wish. I called them `index.*`
@@ -74,7 +75,7 @@ In client, let's move the `.html`, `.css` and `.js` files. You can rename them a
     +- index.js
     +- index.css
 - server
-- model
+- models
 ```
 
 In `index.js` cut the code 
@@ -88,7 +89,9 @@ if (Meteor.isServer) {
 ```
 
 You can put the startup function in a file in the `server` directory. I put it in a file called `main.js`, but it could be 
-any name. You can remove the code context `if (Meteor.isClient) {` in `client/index.js` as it is now unecessary.
+any name. You can remove the code context `if (Meteor.isClient) {` in `client/index.js` and 
+`if (Meteor.isServer) {` in `server/main.js` as it this is now unnecessary as the code context is created by the directory
+structure.
 
 We now have this directory structure.
 
@@ -99,6 +102,40 @@ We now have this directory structure.
     +- index.css
 - server
     +- main.js
-- model
+- models
 ```
+
+## Create a simple model
+
+In a new file called `models/models.js` we create a new Mongodb collection called `items`. This is going to be a simple
+list of text that we will interact between the web-ui, the mongodb database and the future python client.
+
+```javascript
+Items = new Mongo.Collection("items");
+```
+
+We now have this directory structure.
+
+```bash
+- client
+    +- index.html
+    +- index.js
+    +- index.css
+- server
+    +- main.js
+- models
+    +- models.js
+```
+
+By default meteor is [unsecure](https://www.meteor.com/tutorials/blaze/security-with-methods) so that it's easier to get 
+started to hack on it. That means that both the client and
+ the server share the same database. That's OK when they are both located on the same machine, but as soon as the server 
+ is running on a remote machine we will want to have a separation between the data cached locally by the client, and the
+ real database hosted on the server. In order to work in that way, Meteor client has to `suscribe` to the database.
+
+First we will remove the `insecure` and `autopublish` modules.
+ 
+```bash
+$ meteor remove insecure autopublish
+``` 
 
