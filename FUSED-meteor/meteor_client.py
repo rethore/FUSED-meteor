@@ -50,23 +50,6 @@ def added(collection, id, fields):
     if not 'result' in fields:
         pid = os.getpid()
         client.call('reserve', [id, pid], callback_register)
-        # print(pid, pid2)
-        # if pid2 == pid:
-        #     print('%d: this one is for me: %d'%(pid, pid2))
-        #     try:
-        #         client.call('addResult', [id, str(eval(fields['text']))], callback_function)
-        #     except Exception as e:
-        #         client.call('addResult', [id, '???'], callback_function)
-        #         print(str(e))
-        # else:
-        #     print('%d: this one is for me: %d'%(pid, pid2))
-
-
-        # if collection == 'list' you could subscribe to the list here
-        # with something like
-        # client.subscribe('todos', id)
-        # all_todos = client.find('todos', selector={})
-        # print 'Todos: {}'.format(all_todos)
 
 
 def connected():
