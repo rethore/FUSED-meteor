@@ -4,8 +4,36 @@ Meteor.startup(function () {
     // code to run on server at startup
 });
 
-Meteor.publish("items", function () {
-  return Items.find();
+Meteor.publish("items", () => Items.find());
+Meteor.publish("problems", () => Problems.find());
+Meteor.publish("images", () => Images.find());
+
+Images.deny({
+  insert: () => false,
+  update: () => false,
+  remove: () => false,
+  download: () => false,
+});
+
+Images.allow({
+  insert: () => true,
+  remove: () => true,
+  update: () => true,
+  download: () => true,
+});
+
+Problems.deny({
+  insert: () => false,
+  update: () => false,
+  remove: () => false,
+  download: () => false,
+});
+
+Problems.allow({
+  insert: () => true,
+  remove: () => true,
+  update: () => true,
+  download: () => true,
 });
 
 Meteor.methods({
@@ -25,11 +53,11 @@ Meteor.methods({
     var item = Items.findOne({_id:id});
     if (! item.hasOwnProperty('pid')) {
       Items.update(id, {$set: {pid: pid}});
-      console.log(id, pid, item)
+      console.log(id, pid, item);
       return Items.findOne({_id:id})
     } else {
       console.log(id, pid, item, item.pid);
       return item
     }
-  }
-});
+  },
+ });

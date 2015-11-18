@@ -5,27 +5,67 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-  <div>
-    {{> hello}}
+  <div class="row">
+    <div class="container col-md-4">
+      {{> upload_bootstrap }}
+      {{> dropzone }}
+    </div>
   </div>
 
-  <div>
-    {{> add_items}}
+  <div class="row">
+    <div class="container col-md-4">
+      {{> load_file }}
+    </div>
   </div>
 
-  <div>
-    {{> item_list}}
+  <div class="row">
+    <div class="container col-md-4">
+      {{> loaded_files }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container col-md-4">
+      {{> add_items}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="container col-md-4 well">
+      {{> item_list}}
+    </div>
   </div>
 </body>
 
+<template name="load_file">
+  <input type="file" name="myfile" class="myFileInput btn">
+</template>
+
+<template name="loaded_files">
+  <h2>uploaded files:</h2>
+    {{#each images}}
+        <div>
+            <!--<a href="{{this.url}}" target="_blank"><img src="{{this.url}}" alt="" class="thumbnail" />{{this.url}}</a><br/>-->
+            <strong>{{name}}</strong> <a href="{{url download=true}}" class="btn btn-primary">Download</a>
+        </div>
+    {{/each}}
+  <h2>uploaded problems:</h2>
+  {{#each problems}}
+        <div>
+            <!--<a href="{{this.url}}" target="_blank"><img src="{{this.url}}" alt="" class="thumbnail" />{{this.url}}</a><br/>-->
+            <strong>{{name}}</strong> <a href="{{url download=true}}" class="btn btn-primary">Download</a>
+        </div>
+    {{/each}}
+</template>
+
 <template name="hello">
-  <button>Click Me</button>
+  <button class="btn btn-group-xs btn-danger">Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
 </template>
 
 <template name="add_items">
-  <form class="new_item">
-    <input name="item" placeholder="New Item">
+  <form class="new_item form-group">
+      <input name="item" placeholder="New Item" class="form-control">
   </form>
 </template>
 
