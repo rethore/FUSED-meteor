@@ -1,4 +1,6 @@
 import time
+
+import yaml
 from MeteorClient import MeteorClient
 import numpy as np
 import scipy as sp
@@ -36,6 +38,10 @@ def load_class(full_class_string):
     # Finally, we retrieve the Class
     return getattr(module, class_str)
 
+def readyml(filename):
+    with open(filename, 'r') as f:
+        return yaml.load(f.read())
+
 class FUSEDProblem(Problem):
     def __init__(self, problem=None, filename=None):
         super(FUSEDProblem, self).__init__()
@@ -58,7 +64,7 @@ class FUSEDProblem(Problem):
     def load_inputs(self, filename):
         inputs = readyml(filename)
         for k,v in inputs.items():
-            pb[k] = v
+            self[k] = v
 
 problems = {}
 
