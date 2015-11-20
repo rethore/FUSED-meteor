@@ -1,7 +1,8 @@
 
 Meteor.subscribe("items");
-Meteor.subscribe("images");
+Meteor.subscribe("inputs");
 Meteor.subscribe("problems");
+Meteor.subscribe("params")
 
 // counter starts at 0
 Session.setDefault('counter', 0);
@@ -29,46 +30,57 @@ Template.add_items.events({
 });
 
 Template.loaded_files.helpers({
-  images: () => Images.find({}),
+  inputs: () => Inputs.find({}),
   problems: () => Problems.find({}),
 });
 
-Template.load_file.events({
-   'change .myFileInput': function(event) {
-     console.log('hello world');
+Template.param_list.helpers({
+  params: () => Params.find({}),
+})
+
+Template.param_list.events({
+  'click .clear': function(event) {
+    Meteor.call('clearParams');
+  },
+  'submit .run': function(event) {
+    Meteor.call('updateParams', event)
+  }
+});
+
+Template.item_list.events({
+  'click .clear': function(event) {
+    Meteor.call('clearCommands');
+  }
+});
+
+
+Template.loaded_files.events({
+  'click .delete_input': function(event) {
+    console.log('delete', this.original.name);
+    Inputs.remove({_id: this._id});
+  },
+  'click .delete_problem': function(event) {
+    console.log('delete', this.original.name);
+    Problems.remove({_id: this._id});
+  }
+});
+
+Template.load_problem.events({
+   'change .myFileProblem': function(event) {
      FS.Utility.eachFile(event, function(file){
-       console.log('doing stuff', file);
-       //try {
-       //  var data = YAML.safeLoad(file.data);
-       //  console.log(data);
-       //} catch (e) {
-       //  console.log(e);
-       //}
        var fileObj = new FS.File(file);
-       //Images.insert(fileObj);
        Problems.insert(fileObj);
-       console.log('success!:',fileObj);
-       //  , function (err, fileObj) {
-       // // Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
-       //   if (err) {console.log('there is an error',err)}
-       //   else     {console.log('success!:',fileObj)}
-       //});
-       //Problems.insert(file, function (err, fileObj) {
-       //  if (err){
-       //    // handle error
-       //    console.log('there is an error',err)
-       //  } else {
-       //    // handle success depending what you need to do
-       //    //var userId = Meteor.userId();
-       //    //var imagesURL = {
-       //    //  "profile.problems": "/cfs/files/problems/" + fileObj._id
-       //    //};
-       //    //Meteor.users.update(userId, {$set: imagesURL});
-       //    console.log('new file: '+fileObj._id, imagesURL);
-       //  }
-       //});
      })},
 });
+
+Template.load_input.events({
+   'change .myFileInput': function(event) {
+     FS.Utility.eachFile(event, function(file){
+       var fileObj = new FS.File(file);
+       Inputs.insert(fileObj);
+     })},
+});
+
 
 Template.item_list.helpers({
   items: () => Items.find({}),

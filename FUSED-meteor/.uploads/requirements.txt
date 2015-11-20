@@ -1,0 +1,5 @@
+git+https://github.com/OpenMDAO/OpenMDAO.git
+git+git@github.com:FUSED-Wind/fusedwind-dev.git
+git+http://github.com/FUSED-Wind/fusedwind-dev.git
+git+https://gitlab.windenergy.dtu.dk/SEAM/SEAMLoads.git
+pyyaml

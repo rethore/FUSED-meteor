@@ -1,0 +1,25 @@
+root:
+  class: Group
+  components:
+    - name: tower
+      class: seamtower.SEAMTower.SEAMTower
+      parameters:
+        n_sections: 21
+      promotes: ['*']
+    - name: loads
+      class: seamloads.SEAMLoads.SEAMLoads
+      promotes: ['*']
+      parameters:
+        n_wsp: 26
+    - name: blade
+      class: seamrotor.seamrotor.SEAMBladeStructure
+      promotes: ['*']
+    - name: power_curve
+      class: seamaero.seam_aep.SEAM_PowerCurve
+      parameters:
+        n_wsp: 26
+      promotes: ['*']
+
+driver:
+  class: RunOnce
+

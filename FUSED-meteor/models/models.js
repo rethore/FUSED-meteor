@@ -1,8 +1,9 @@
 Items = new Mongo.Collection("items");
+Params = new Mongo.Collection("params");
 
 Problems = new FS.Collection("problems", {
-  stores: [new FS.Store.GridFS("problems")]
+  stores: [new FS.Store.FileSystem("problems", {path: "/Users/pire/uploads/problems"})]
 });
-Images = new FS.Collection("images", {
-  stores: [new FS.Store.FileSystem("images", {path: "~/uploads"})]
+Inputs = new FS.Collection("inputs", {
+  stores: [new FS.Store.FileSystem("inputs", {path: "/Users/pire/uploads/inputs"})]
 });
