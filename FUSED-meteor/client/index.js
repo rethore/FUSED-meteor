@@ -2,23 +2,7 @@
 Meteor.subscribe("items");
 Meteor.subscribe("inputs");
 Meteor.subscribe("problems");
-Meteor.subscribe("params")
-
-// counter starts at 0
-Session.setDefault('counter', 0);
-
-Template.hello.helpers({
-  counter: function () {
-    return Session.get('counter');
-  }
-});
-
-Template.hello.events({
-  'click button': function () {
-    // increment the counter when button is clicked
-    Session.set('counter', Session.get('counter') + 1);
-  }
-});
+Meteor.subscribe("params");
 
 Template.add_items.events({
   'submit .new_item': function(event) {
