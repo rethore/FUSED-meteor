@@ -39,13 +39,6 @@ Problems.allow({
 
 var fs = Npm.require('fs');
 
-//Problems.on('uploaded', function(fileObj) {
-//      console.log('entering on uploaded', fileObj._id, fileObj.name);
-//      var data = YAML.safeLoad(fs.readFileSync(fileObj.url, 'utf8'));
-//      console.log('show me the data', data);
-//      //Items.insert({text:data, createdAt: new Date()});
-//});
-
 Problems.on('stored', Meteor.bindEnvironment(function(fileObj) {
       let url1 = fileObj.collection.primaryStore.path + '/' + fileObj.collection.primaryStore.name + '-' + fileObj._id + '-' + fileObj.original.name;
       let str = fs.readFileSync(url1, 'utf8');
