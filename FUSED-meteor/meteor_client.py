@@ -42,7 +42,8 @@ def callback_register(error, result):
                 pb = item['text']
                 problems[pb] = FUSEDProblem(item['data'])
                 out = problems[pb].setup()
-                client.call('dangling', [out['dangling_params'], pb])
+                indeps = problems[pb].list_indepvars()
+                client.call('dangling', [indeps, pb])
             else:
                 client.call('addResult', [item['_id'], str(eval(item['text']))+' (%d)'%(os.getpid())], callback_function)
         except Exception as e:
