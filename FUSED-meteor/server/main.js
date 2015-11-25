@@ -45,19 +45,19 @@ Problems.on('stored', Meteor.bindEnvironment(function(fileObj) {
       let data = YAML.safeLoad(str);
       if (Problems.findOne({_id:fileObj._id}) != null) {
         console.log('PROBLEMS--------', fileObj.original.name);
-        Items.insert({text: fileObj.original.name, data: data, createdAt: new Date()});
+        Items.insert({text: fileObj.original.name, problem: data, createdAt: new Date()});
       }
       if (Inputs.findOne({_id:fileObj._id}) != null) {
-        console.log('INPUTS--------', fileObj.original.name);
+        console.log('INPUTS--------', fileObj.original.name, fileObj.related_problem);
         //Items.insert({text: fileObj.original.name, data: data, createdAt: new Date()});
-        for (var key in data) {
-          if (data.hasOwnProperty(key)) {
-            paramObj = Params.findOne({key:key})
-            if (paramObj != null) {
-              Params.update(paramObj._id, {$set:{key:key, value:data[key]}});
+        let pb = Items.findOne({text: fileObj.related_problem});
+        console.log('pb:', pb, data)
+        pb.params.forEach(function(element, index, array) {
+            if (data.hasOwnProperty(element.key)) {
+                element.value = data[element.key];
             }
-          }
-        }
+          });
+        Items.update(pb._id, {$set: {params: pb.params}});
     };
 }));
 
@@ -87,13 +87,24 @@ Meteor.methods({
   },
   dangling: function(dangling_params, problem) {
     dangling_params.forEach(function(el, ind, arr){
-      Params.insert({key: el, problem: problem});
+      //Params.insert({key: el, problem: problem});
     });
+  },
+  add_params: function(problem) {
+    console.log('receiving problem:', problem);
+    Items.update(problem['_id'], problem);
   },
   clearParams: function() {
     Params.remove({key: {$regex: '.*'}})
   },
   clearCommands: function() {
-    Items.remove({text: {$regex: '.*'}})
+    Items.remove({text: {$regex: '.*'}});
+    Items.remove({problem: {$regex: '.*'}});
+  },
+  update_items: (id, fields) => Items.update(id, {$set: fields}),
+  call_python: function(func_name, args, kwargs={}){
+    let func_obj = {createdAt: new Date()};
+    func_obj[func_name] = {'args':args, 'kwargs':kwargs};
+    Items.insert(func_obj);
   },
  });

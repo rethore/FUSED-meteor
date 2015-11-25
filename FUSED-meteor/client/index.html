@@ -25,9 +25,16 @@
       </div>
     </div>
 
+
     <div class="row">
       <div class="container col-md-12">
         {{> item_list}}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="container col-md-12">
+        {{> problem_list}}
       </div>
     </div>
 
@@ -47,14 +54,16 @@
 <template name="load_problem">
     <div class="form-group">
       <label for="ProblemFile">Problem file</label>
-      <input type="file" id="ProblemFile" name="ProblemFile" class="myFileProblem form-control">
+      <input type="file" id="ProblemFile" name="ProblemFile"
+             class="myFileProblem form-control">
     </div>
 </template>
 
 <template name="load_input">
     <div class="form-group">
       <label for="InputFile">Input file</label>
-      <input type="file" id="InputFile" name="InputFile" class="myFileInput form-control">
+      <input type="file" id="InputFile" name="InputFile"
+             class="myFileInput form-control">
     </div>
 </template>
 
@@ -63,7 +72,8 @@
     {{#each inputs}}
         <div>
             <!--<a href="{{this.url}}" target="_blank"><img src="{{this.url}}" alt="" class="thumbnail" />{{this.url}}</a><br/>-->
-            <strong>{{name}}</strong> <a href="{{url download=true}}" class="btn btn-primary">Download</a>
+            <strong>{{name}}</strong>
+            <a href="{{url download=true}}" class="btn btn-primary">Download</a>
         <span class="btn"><i class="fa fa-times delete_input"></i></span>
         </div>
     {{/each}}
@@ -72,7 +82,8 @@
   {{#each problems}}
         <div>
             <!--<a href="{{this.url}}" target="_blank"><img src="{{this.url}}" alt="" class="thumbnail" />{{this.url}}</a><br/>-->
-            <strong>{{name}}</strong> <a href="{{url download=true}}" class="btn btn-primary">Download</a>
+            <strong>{{name}}</strong>
+            <a href="{{url download=true}}" class="btn btn-primary">Download</a>
         <i class="fa fa-times delete_problem"></i>
         </div>
     {{/each}}
@@ -98,16 +109,25 @@
   {{text}}{{#if result}} = {{result}}{{/if}}
 </template>
 
+<template name="problem_list">
+  <h2>Problems <div class="btn btn-danger clear">clear</div></h2>
+  <div class="well col-m-4">
+  {{#each problems}}
+    <div class="container problem {{selected}}">{{text}}</div>
+  {{/each}}
+  </div>
+</template>
+
 <template name="param_list">
   <h2>Parameters   <div class="btn btn-danger clear">clear</div></h2>
-  <form role="form" class="form-horizontal">
-  {{#each params}}
-    <div class="form-group">
-      <label for="{{key}}" class="col-sm-4 control-label">{{key}}</label>
-      <div class="col-sm-8">
-        <input type="text" id="{{key}}" class="form-control" value="{{value}}">
+    <form role="form" class="form-horizontal">
+    {{#each params}}
+      <div class="form-group">
+        <label for="{{key}}" class="col-sm-4 control-label">{{key}}</label>
+        <div class="col-sm-8">
+          <input type="text" id="{{key}}" class="form-control" value="{{value}}">
+        </div>
       </div>
-    </div>
-  {{/each}}
-  </form>
+    {{/each}}
+    </form>
 </template>

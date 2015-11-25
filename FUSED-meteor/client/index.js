@@ -4,6 +4,9 @@ Meteor.subscribe("inputs");
 Meteor.subscribe("problems");
 Meteor.subscribe("params");
 
+
+Session.setDefault('problem_name', '');
+
 Template.add_items.events({
   'submit .new_item': function(event) {
     event.preventDefault();
@@ -19,7 +22,8 @@ Template.loaded_files.helpers({
 });
 
 Template.param_list.helpers({
-  params: () => Params.find({}),
+  problems: () => Items.find({problem: {$exists:true}}),
+  params: () => Items.findOne({'text': Session.get('problem_name')}).params,
 })
 
 Template.param_list.events({
@@ -54,6 +58,8 @@ Template.load_problem.events({
      FS.Utility.eachFile(event, function(file){
        var fileObj = new FS.File(file);
        Problems.insert(fileObj);
+       console.log(fileObj);
+       Session.set('problem_name', fileObj.original.name)
      })},
 });
 
@@ -61,6 +67,7 @@ Template.load_input.events({
    'change .myFileInput': function(event) {
      FS.Utility.eachFile(event, function(file){
        var fileObj = new FS.File(file);
+       fileObj.related_problem = Session.get('problem_name');
        Inputs.insert(fileObj);
      })},
 });
@@ -68,4 +75,18 @@ Template.load_input.events({
 
 Template.item_list.helpers({
   items: () => Items.find({}),
+});
+
+
+Template.problem_list.helpers({
+  problems: () => Items.find({problem: {$exists: true}}),
+  selected: function() {
+    if (Session.equals('problem_name', this.text)) return 'selected'
+  },
+});
+
+Template.problem_list.events({
+  'click .problem': function(event, template){
+      Session.set('problem_name', this.text);
+  }
 });

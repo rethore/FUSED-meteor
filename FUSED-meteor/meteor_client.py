@@ -28,27 +28,37 @@ def unsubscribed(subscription):
 
 problems = {}
 
-def callback_register(error, result):
+
+def log_error(error, result):
+    if error:
+        print(error)
+        return
+    print(result)
+
+def callback_register(error, item):
     if error:
         print(error)
         return
 
-    print('here is the result', result, result.__class__.__name__)
-    item = result
+    print('here is the item', item, item.__class__.__name__)
     if item['pid'] == os.getpid():
-        try:
-            if 'data' in item.keys():
-                print('its a fusedwind problem',item)
-                pb = item['text']
-                problems[pb] = FUSEDProblem(item['data'])
-                out = problems[pb].setup()
-                indeps = problems[pb].list_indepvars()
-                client.call('dangling', [indeps, pb])
-            else:
-                client.call('addResult', [item['_id'], str(eval(item['text']))+' (%d)'%(os.getpid())], callback_function)
-        except Exception as e:
-            client.call('addResult', [item['_id'], '??? (%d)'%(os.getpid())], callback_function)
-            print(str(e))
+        # try:
+        if 'problem' in item.keys():
+            pb = item['text']
+            problems[pb] = FUSEDProblem(item['problem'])
+            out = problems[pb].setup()
+            indeps = problems[pb].list_indepvars()
+            #client.call('dangling', [indeps, pb])
+            print('out', out)
+            item['params'] = [{'key':key } for key in out['dangling_params']]
+            item['indeps'] = [{'key':key } for key in indeps]
+            print('its a fusedwind problem',item)
+            client.call('add_params', [item], callback_function)
+        else:
+            client.call('addResult', [item['_id'], str(eval(item['text']))+' (%d)'%(os.getpid())], callback_function)
+        # except Exception as e:
+        #     #client.call('addResult', [item['_id'], '??? (%d)'%(os.getpid())], callback_function)
+        #     print('something failed',str(e))
 
 
 def added(collection, id, fields):
@@ -63,9 +73,10 @@ def added(collection, id, fields):
     # print('Num lists: {}'.format(len(all_lists)))
 
     if collection == 'items':
-        if not 'result' in fields:
+        if 'problem' in fields:
             pid = os.getpid()
-            client.call('reserve', [id, pid], callback_register)
+            if 'pid' not in fields:
+                client.call('reserve', [id, pid], callback_register)
 
 
 def changed(collection, id, fields, cleared):
