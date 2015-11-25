@@ -6,8 +6,10 @@ import numpy as np
 import scipy as sp
 import os
 import json
-from openmdao.api import Problem, Group
 import importlib
+
+from fusedwind.core.problem_builder import FUSEDProblem
+
 
 client = MeteorClient('ws://127.0.0.1:3000/websocket')
 
@@ -23,48 +25,6 @@ def subscribed(subscription):
 
 def unsubscribed(subscription):
     print('* UNSUBSCRIBED {}'.format(subscription))
-
-
-def load_class(full_class_string):
-    """
-    dynamically load a class from a string
-    """
-
-    class_data = full_class_string.split(".")
-    module_path = ".".join(class_data[:-1])
-    class_str = class_data[-1]
-
-    module = importlib.import_module(module_path)
-    # Finally, we retrieve the Class
-    return getattr(module, class_str)
-
-def readyml(filename):
-    with open(filename, 'r') as f:
-        return yaml.load(f.read())
-
-class FUSEDProblem(Problem):
-    def __init__(self, problem=None, filename=None):
-        super(FUSEDProblem, self).__init__()
-        if filename is not None:
-            pb = readyml(filename)
-            self.load_problem(pb)
-        if problem is not None:
-            self.load_problem(problem)
-
-    def load_problem(self, pb):
-        if 'root' in pb:
-            if pb['root']['class'] == 'Group':
-                self.root = Group()
-            if 'components' in pb['root']:
-                for c in pb['root']['components']:
-                    if 'parameters' not in c:
-                        c['parameters'] = {}
-                    self.root.add(c['name'], load_class(c['class'])(**c['parameters']), promotes=c['promotes'])
-
-    def load_inputs(self, filename):
-        inputs = readyml(filename)
-        for k,v in inputs.items():
-            self[k] = v
 
 problems = {}
 
@@ -82,7 +42,8 @@ def callback_register(error, result):
                 pb = item['text']
                 problems[pb] = FUSEDProblem(item['data'])
                 out = problems[pb].setup()
-                client.call('dangling', [out['dangling_params'], pb])
+                indeps = problems[pb].list_indepvars()
+                client.call('dangling', [indeps, pb])
             else:
                 client.call('addResult', [item['_id'], str(eval(item['text']))+' (%d)'%(os.getpid())], callback_function)
         except Exception as e:
